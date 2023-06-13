@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  transactions: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Transaction",
+    },
+  ],
 });
 
 export const User = mongoose.model("User", userSchema);
