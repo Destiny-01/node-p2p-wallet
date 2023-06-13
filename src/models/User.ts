@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  walletBalance: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export const User = mongoose.model("User", userSchema);
