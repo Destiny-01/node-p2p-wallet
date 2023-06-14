@@ -7,12 +7,14 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "npm run build && node build/index.js",
-    "start:dev": "nodemon"
+    "start": "yarn run build && node build/index.js",
+    "start:dev": "nodemon",
+    "postbuild": "cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents"
   },
   "dependencies": {
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
+    "cpy-cli": "^2.0.0",
     "dotenv": "^16.1.4",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
