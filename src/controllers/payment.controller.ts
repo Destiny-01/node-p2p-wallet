@@ -49,7 +49,7 @@ export const verifyPayment = async (
     user.walletBalance += response.data.amount / 100 || 0;
     await user.save();
 
-    return res.status(200).json({ success: true, data: user });
+    return res.redirect("/");
   } catch (err: any) {
     return res
       .status(500)

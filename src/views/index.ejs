@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <nav>
+      <h2>Waleete</h2>
+    </nav>
+    <main>
+      <p>
+        Hello, this is a simple app to fund your wallet, and also transfer funds
+        to other users using their email address. It should be pretty to use
+        with the two buttons below <br /><br />
+        Your balance is &#8358;<span></span>
+      </p>
+      <div class="buttons">
+        <button onclick="handleClick(0)">Fund Wallet</button>
+        <button onclick="handleClick(1)">Transfer Funds</button>
+      </div>
+      <div>
+        <form id="fund">
+          <label>How much do you want to deposit?</label>
+          <input type="text" required placeholder="Amount" />
+          <button type="submit">Fund</button>
+        </form>
+        <form id="transfer">
+          <label>Email of the receiver. Please confirm it</label>
+          <input type="email" required placeholder="Receiver Email" />
+          <label>Amount (must be lower than your balance)</label>
+          <input type="text" required placeholder="Amount" />
+          <label>Please input your password to confirm it's really you</label>
+          <input type="password" required placeholder="Password" />
+          <button type="submit">Fund</button>
+        </form>
+      </div>
+      <div class="history">
+        <h3>Transaction History</h3>
+        <ul></ul>
+      </div>
+    </main>
+  </body>
+  <script>
+    const handleClick = (i) => {
+      if (i === 0) {
+        document.getElementById("fund").style.display = "block";
+        document.getElementById("transfer").style.display = "none";
+      } else {
+        document.getElementById("fund").style.display = "none";
+        document.getElementById("transfer").style.display = "block";
+      }
+    };
+
+    const handleTransfer = (event) => {
+      event.preventDefault();
+      fetch("http://localhost:3000/api/v1/transact/transfer", {
+        body: JSON.stringify({
+          email: localStorage.getItem("email"),
+          receiverEmail: event.target[0].value,
+          amount: event.target[1].value,
+          password: event.target[2].value,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => {
+          res.json().then((data) => {
+            if (!data.success) {
+              return alert(data.message);
+            }
+            localStorage.setItem("balance", data.data.walletBalance);
+            document.getElementsByTagName("span")[0].innerHTML =
+              data.data.walletBalance;
+
+            const ul = document.getElementsByTagName("ul")[0];
+            const li = document.createElement("li");
+            li.innerHTML = `You sent ${data.transaction.amount} to ${
+              data.transaction.receiver.email
+            } on ${new Date(data.transaction.createdAt)}`;
+            ul.appendChild(li);
+          });
+        })
+        .catch((err) => {
+          alert(err.message || "An error occured");
+        });
+    };
+
+    const handleFund = (event) => {
+      event.preventDefault();
+      fetch("http://localhost:3000/api/v1/paystack/init", {
+        body: JSON.stringify({
+          email: localStorage.getItem("email"),
+          amount: event.target[0].value,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => {
+          res.json().then((data) => {
+            if (!data.success) {
+              return alert(data.message);
+            }
+            window.location.replace(data.data);
+          });
+        })
+        .catch((err) => {
+          alert(err.message || "An error occured");
+        });
+    };
+
+    const getTransactionHistory = () => {
+      const email = localStorage.getItem("email");
+      fetch(`http://localhost:3000/api/v1/transact/transactions?email=${email}`)
+        .then((res) => {
+          res.json().then((data) => {
+            if (!data.success) {
+              return alert(data.message);
+            }
+            if (localStorage.getItem("balance") != data.user.balance) {
+              localStorage.setItem("balance", data.user.balance);
+              document.getElementsByTagName("span")[0].innerHTML =
+                data.user.walletBalance;
+            }
+
+            const ul = document.getElementsByTagName("ul")[0];
+            data.data.forEach((transaction) => {
+              const li = document.createElement("li");
+              if (transaction.sender.email === email) {
+                li.innerHTML = `You sent ${transaction.amount} to ${
+                  transaction.receiver.email
+                } on ${new Date(transaction.createdAt)}`;
+              } else if (transaction.receiver.email === email) {
+                li.innerHTML = `${transaction.sender.email} sent you ${
+                  transaction.amount
+                } on ${new Date(transaction.createdAt)}`;
+              }
+              ul.appendChild(li);
+            });
+          });
+        })
+        .catch((err) => {
+          alert(err.message || "An error occured");
+        });
+    };
+
+    const fundForm = document.getElementById("fund");
+    fundForm.addEventListener("submit", handleFund);
+    const transferForm = document.getElementById("transfer");
+    transferForm.addEventListener("submit", handleTransfer);
+
+    window.addEventListener("load", () => {
+      if (!localStorage.getItem("email")) {
+        window.location.href = "/login";
+      }
+      document.getElementsByTagName("span")[0].innerHTML =
+        localStorage.getItem("balance");
+      getTransactionHistory();
+    });
+  </script>
+</html>

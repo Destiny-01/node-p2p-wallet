@@ -1,7 +1,7 @@
 import { compare } from "bcryptjs";
 import { Response } from "express";
 import { Transaction, User } from "../models";
-import { ExtendedTranferRequest } from "../types";
+import { ExtendedTranferRequest, ExtendedTransactionRequest } from "../types";
 
 export const transferFunds = async (
   req: ExtendedTranferRequest,
@@ -62,7 +62,29 @@ export const transferFunds = async (
     await user.save();
     await receivingUser.save();
 
-    return res.status(200).json({ success: true, data: user });
+    return res.status(200).json({ success: true, data: user, transaction });
+  } catch (err: any) {
+    return res
+      .status(500)
+      .json({ success: false, message: `An error occured: ${err.message}` });
+  }
+};
+
+export const getTransactionForUser = async (
+  req: ExtendedTransactionRequest,
+  res: Response
+) => {
+  try {
+    const { email } = req.query;
+
+    const user = await User.findOne({ email });
+    const transactions = await Transaction.find({
+      $or: [{ sender: user?._id }, { receiver: user?._id }],
+    })
+      .populate("sender")
+      .populate("receiver");
+
+    return res.status(200).json({ success: true, data: transactions, user });
   } catch (err: any) {
     return res
       .status(500)

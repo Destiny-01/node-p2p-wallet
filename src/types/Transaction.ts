@@ -8,3 +8,9 @@ export interface ExtendedTranferRequest extends Request {
     receiverEmail: string;
   };
 }
+
+export interface ExtendedTransactionRequest extends Request {
+  body: {
+    email: string;
+  };
+}

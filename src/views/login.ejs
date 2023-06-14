@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <nav>
+      <h2>Waleete</h2>
+    </nav>
+    <main>
+      <p>
+        Hello, this is a simple app to fund your wallet, and also transfer funds
+        to other users using their email address. It should be pretty to use.
+        Just login or signup below
+      </p>
+      <div class="buttons">
+        <button onclick="handleClick(0)">Login</button>
+        <button onclick="handleClick(1)">Signup</button>
+      </div>
+      <div>
+        <form id="login">
+          <label>Email</label>
+          <input type="email" required placeholder="Email" />
+          <label>Password</label>
+          <input type="password" required placeholder="Password" />
+          <button type="submit">Submit</button>
+        </form>
+        <form id="signup">
+          <label>Name</label>
+          <input type="text" required placeholder="Name" />
+          <label>Email</label>
+          <input type="email" required placeholder="Email" />
+          <label>Password</label>
+          <input type="password" required placeholder="Password" />
+          <button type="submit" form="signup">Submit</button>
+        </form>
+      </div>
+    </main>
+  </body>
+  <script>
+    const handleClick = (i) => {
+      if (i === 0) {
+        document.getElementById("login").style.display = "block";
+        document.getElementById("signup").style.display = "none";
+      } else {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("signup").style.display = "block";
+      }
+    };
+
+    const loginForm = document.getElementById("login");
+    const signupForm = document.getElementById("signup");
+
+    function handleLoginForm(event) {
+      event.preventDefault();
+      fetch("http://localhost:3000/api/v1/auth/login", {
+        body: JSON.stringify({
+          email: event.target[0].value,
+          password: event.target[1].value,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => {
+          res.json().then((data) => {
+            if (!data.success) {
+              return alert(data.message);
+            }
+            localStorage.setItem("email", data.data.email);
+            localStorage.setItem("balance", data.data.walletBalance);
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 500);
+          });
+        })
+        .catch((err) => {
+          alert(err.message || "An error occured");
+        });
+    }
+    function handleSignupForm(event) {
+      event.preventDefault();
+      fetch("http://localhost:3000/api/v1/auth/signup", {
+        body: JSON.stringify({
+          name: event.target[0].value,
+          email: event.target[1].value,
+          password: event.target[2].value,
+        }),
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          res.json().then((data) => {
+            if (!data.success) {
+              return alert(data.message);
+            }
+            localStorage.setItem("balance", data.data.walletBalance);
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 500);
+          });
+        })
+        .catch((err) => {
+          alert(err.message || "An error occured");
+        });
+    }
+    signupForm.addEventListener("submit", handleSignupForm);
+    loginForm.addEventListener("submit", handleLoginForm);
+  </script>
+</html>

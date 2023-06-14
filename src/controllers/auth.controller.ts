@@ -13,7 +13,7 @@ export const signupController = async (
     if (!name || !email || !password) {
       return res
         .status(400)
-        .json({ success: false, error: "Name, email and password required" });
+        .json({ success: false, message: "Name, email and password required" });
     }
 
     const existingUser = await User.findOne({ email });
@@ -21,7 +21,7 @@ export const signupController = async (
     if (existingUser) {
       return res
         .status(401)
-        .json({ success: false, error: "Email has already been taken" });
+        .json({ success: false, message: "Email has already been taken" });
     }
 
     const hashedPassword = await hash(password, 10);
@@ -47,14 +47,14 @@ export const loginController = async (
     if (!user) {
       return res
         .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
+        .json({ success: false, message: "Invalid Credentials" });
     }
 
     const isValidPassword = await compare(password, user.password);
     if (!isValidPassword) {
       return res
         .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
+        .json({ success: false, message: "Invalid Credentials" });
     }
 
     return res.status(200).json({ success: true, data: user });

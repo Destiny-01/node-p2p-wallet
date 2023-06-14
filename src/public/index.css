@@ -1,0 +1,37 @@
+body {
+  background-color: whitesmoke;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+main {
+  margin: 0 auto;
+  max-width: 400px;
+}
+
+.buttons {
+  display: flex;
+  margin-top: 24px;
+  justify-content: space-around;
+}
+
+input {
+  display: block;
+  margin-bottom: 12px;
+}
+
+form,
+.history {
+  margin-top: 24px;
+  text-align: left;
+}
+
+span {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+#transfer,
+#signup {
+  display: none;
+}
