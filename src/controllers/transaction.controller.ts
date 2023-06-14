@@ -56,8 +56,8 @@ export const transferFunds = async (
 
     user.transactions.push(transaction._id);
     receivingUser.transactions.push(transaction._id);
-    user.walletBalance -= amount;
-    receivingUser.walletBalance += amount;
+    user.walletBalance -= Number(amount);
+    receivingUser.walletBalance += Number(amount);
 
     await user.save();
     await receivingUser.save();

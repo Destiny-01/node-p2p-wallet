@@ -12,7 +12,7 @@ export const handleInitPayment = async (
   try {
     const callback_url = `https://${
       process.env.NODE_ENV === "production"
-        ? "paystack-p2p-wallet.vercel.app"
+        ? "node-p2p-wallet.onrender.com"
         : "localhost:3000"
     }/api/v1/paystack/callback`;
 
