@@ -2,12 +2,12 @@
   "name": "p2p-wallet",
   "version": "1.0.0",
   "description": "A simple P2P wallet system",
-  "main": "src/app.js",
+  "main": "build/index.js",
   "author": "Destiny-01",
   "license": "MIT",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "npm run build && node build/app.js",
+    "start": "npm run build && node build/index.js",
     "start:dev": "nodemon"
   },
   "dependencies": {
