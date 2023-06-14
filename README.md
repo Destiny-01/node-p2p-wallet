@@ -1,6 +1,6 @@
 # Waleete
 
-This is a simple P2P wallet system
+This is a simple P2P wallet system. You can test it live [here](https://node-p2p-wallet.onrender.com)
 
 ### Technologies Used
 
@@ -11,7 +11,7 @@ This is a simple P2P wallet system
 
 ### How to Test
 
-It's quite simple. Go to the [Live Link]() (The frontend is a little bit shabby, I didn't want to spend any time at all on that)
+It's quite simple. Go to the [Live Link](https://node-p2p-wallet.onrender.com) (The frontend is a little bit shabby, I didn't want to spend any time at all on that)
 
 - Click on the signup button and signup
 - While on the app, put in the amount you want to fund yourself and proceed to make payment with your favourite payment mechanism
