@@ -10,7 +10,7 @@ export const handleInitPayment = async (
   data: PaystackData
 ): Promise<ReturnedPaystackData> => {
   try {
-    const callback_url = `http://${
+    const callback_url = `https://${
       process.env.NODE_ENV === "production"
         ? "paystack-p2p-wallet.vercel.app"
         : "localhost:3000"

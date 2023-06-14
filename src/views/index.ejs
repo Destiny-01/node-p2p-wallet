@@ -57,7 +57,7 @@
 
     const handleTransfer = (event) => {
       event.preventDefault();
-      fetch(`http://${window.location.host}/api/v1/transact/transfer`, {
+      fetch(`https://${window.location.host}/api/v1/transact/transfer`, {
         body: JSON.stringify({
           email: localStorage.getItem("email"),
           receiverEmail: event.target[0].value,
@@ -94,7 +94,7 @@
 
     const handleFund = (event) => {
       event.preventDefault();
-      fetch(`http://${window.location.host}/api/v1/paystack/init`, {
+      fetch(`https://${window.location.host}/api/v1/paystack/init`, {
         body: JSON.stringify({
           email: localStorage.getItem("email"),
           amount: event.target[0].value,
@@ -120,7 +120,9 @@
 
     const getTransactionHistory = () => {
       const email = localStorage.getItem("email");
-      fetch(`http://${window.location.host}/api/v1/transactions?email=${email}`)
+      fetch(
+        `https://${window.location.host}/api/v1/transactions?email=${email}`
+      )
         .then((res) => {
           res.json().then((data) => {
             if (!data.success) {
